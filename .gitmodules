@@ -1,0 +1,9 @@
+[submodule "certbot-cloudflare-systemd"]
+	path = certbot-cloudflare-systemd
+	url = git@github.com:rokoucha/certbot-cloudflare-systemd.git
+[submodule "cloudflare-ddns"]
+	path = cloudflare-ddns
+	url = git@github.com:rokoucha/cloudflare-ddns.git
+[submodule "voyager"]
+	path = voyager
+	url = git@github.com:rokoucha/voyager.git
