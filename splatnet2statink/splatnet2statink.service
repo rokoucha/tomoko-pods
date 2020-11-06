@@ -1,0 +1,20 @@
+[Unit]
+Description=Takes battle data from the SplatNet 2 app and uploads it to stat.ink. 
+
+[Service]
+ExecStart=/usr/bin/podman run \
+    --env-file .env \
+    --name=%p \
+    --rm \
+    isseim/splatnet2statink:v1.5.6 \
+    -r
+ExecStartPre=-/usr/bin/podman kill %p
+ExecStartPre=-/usr/bin/podman rm %p
+ExecStartPre=/usr/bin/podman pull isseim/splatnet2statink:v1.5.6
+KillMode=none
+TimeoutStartSec=0
+Type=simple
+WorkingDirectory=%h/pods/splatnet2statink
+
+[Install]
+WantedBy=multi-user.target
