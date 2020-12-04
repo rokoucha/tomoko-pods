@@ -7,3 +7,6 @@
 [submodule "voyager"]
 	path = voyager
 	url = git@github.com:rokoucha/voyager.git
+[submodule ".env"]
+	path = .env
+	url = git@github.com:rokoucha/tomoko-secrets.git
