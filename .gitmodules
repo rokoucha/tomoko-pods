@@ -4,9 +4,6 @@
 [submodule "cloudflare-ddns"]
 	path = cloudflare-ddns
 	url = git@github.com:rokoucha/cloudflare-ddns.git
-[submodule "voyager"]
-	path = voyager
-	url = git@github.com:rokoucha/voyager.git
 [submodule ".env"]
 	path = .env
 	url = git@github.com:rokoucha/tomoko-secrets.git
