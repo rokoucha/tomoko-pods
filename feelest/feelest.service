@@ -1,0 +1,28 @@
+[Unit]
+Description=The best way to expressing your feelings.
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=60
+ExecStartPre=/bin/rm -f %t/container-feelest.pid %t/container-feelest.ctr-id
+ExecStartPre=/usr/bin/podman build -t feelest .
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile %t/container-feelest.ctr-id \
+    --conmon-pidfile %t/container-feelest.pid \
+    --name=feelest \
+    --replace \
+    --rm \
+    -p 55000:5000 \
+    feelest
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-feelest.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-feelest.ctr-id
+PIDFile=%t/container-feelest.pid
+Type=simple
+WorkingDirectory=%h/pods/feelest
+
+[Install]
+WantedBy=multi-user.target default.target

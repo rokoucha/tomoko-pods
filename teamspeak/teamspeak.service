@@ -1,0 +1,32 @@
+[Unit]
+Description=The Software for quality voice communication via the Internet.
+Requires=mariadb.service
+Wants=network.target
+After=network-online.target mariadb.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=60
+ExecStartPre=/bin/rm -f %t/container-teamspeak.pid %t/container-teamspeak.ctr-id
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile %t/container-teamspeak.ctr-id \
+    --conmon-pidfile %t/container-teamspeak.pid \
+    --env-file .env \
+    --name=teamspeak \
+    --net=host \
+    --replace \
+    --rm \
+    -p 9987:9987/udp \
+    -p 10011:10011 \
+    -p 30033:30033 \
+    teamspeak:3.13
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-teamspeak.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-teamspeak.ctr-id
+PIDFile=%t/container-teamspeak.pid
+Type=simple
+WorkingDirectory=%h/pods/teamspeak
+
+[Install]
+WantedBy=multi-user.target default.target

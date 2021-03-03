@@ -1,0 +1,29 @@
+[Unit]
+Description=The PostgreSQL object-relational database system provides reliability and data integrity.
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=60
+ExecStartPre=/bin/rm -f %t/container-postgres.pid %t/container-postgres.ctr-id
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile %t/container-postgres.ctr-id \
+    --conmon-pidfile %t/container-postgres.pid \
+    --env-file .env \
+    --name=postgres \
+    --replace \
+    --rm \
+    -p 5432:5432 \
+    -v postgres-data:/var/lib/postgresql/data \
+    postgres:13.2-alpine
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-postgres.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-postgres.ctr-id
+PIDFile=%t/container-postgres.pid
+Type=simple
+WorkingDirectory=%h/pods/postgres
+
+[Install]
+WantedBy=multi-user.target default.target

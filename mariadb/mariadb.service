@@ -1,0 +1,29 @@
+[Unit]
+Description=MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=60
+ExecStartPre=/bin/rm -f %t/container-mariadb.pid %t/container-mariadb.ctr-id
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile %t/container-mariadb.ctr-id \
+    --conmon-pidfile %t/container-mariadb.pid \
+    --env-file .env \
+    --name=mariadb \
+    --replace \
+    --rm \
+    -p 3306:3306 \
+    -v mariadb-data:/var/lib/mysql \
+    mariadb:10.5-focal
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-mariadb.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-mariadb.ctr-id
+PIDFile=%t/container-mariadb.pid
+Type=simple
+WorkingDirectory=%h/pods/mariadb
+
+[Install]
+WantedBy=multi-user.target default.target

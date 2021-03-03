@@ -1,0 +1,133 @@
+#!/bin/sh
+#                 __    __  __
+#   ___  ___  ___/ /___/ /_/ /
+#  / _ \/ _ \/ _  / __/ __/ / 
+# / .__/\___/\_,_/\__/\__/_/  
+#/_/                          
+
+BASE_DIR=$(dirname "$(readlink -f "$0")")
+ENV_DIR=$BASE_DIR/.env
+
+get_safe_function_name() {
+    echo "$(echo "$2" | sed -e "s/-/_/g")_$1"
+}
+
+exist_command_in_pod() {
+    type "$(get_safe_pod_name "$1" "$2")" > /dev/null 2>&1
+}
+
+fail_if_not_exist() {
+    if exist_command_in_pod "$1" "$2"; then
+        exit 0
+    else
+        echo "Undefined command in '$2': $1"
+        exit 1
+    fi
+}
+
+help() {
+    echo "$0 <COMMAND> [POD]"
+    echo "enable             enable"
+}
+
+update() {
+    if [ -z "$1" ]; then
+        git submodule update --remote --merge "$1"
+    else
+        git fetch
+        git merge origin/master
+        git submodule update --remote --merge
+    fi
+}
+
+enable() {
+    systemctl --user enable "$1.service"
+}
+
+disable() {
+    systemctl --user disable "$1.service"
+}
+
+start() {
+    systemctl --user start "$1.service"
+}
+
+stop() {
+    systemctl --user stop "$1.service"
+}
+
+restart() {
+    systemctl --user restart "$1.service"
+}
+
+status() {
+    systemctl --user status "$1.service"
+}
+
+if [ $# = 0 ]; then
+    help
+    exit 1
+elif [ $# = 1 ]; then
+    COMMAND="$1"
+    shift
+    if ! { [ "$COMMAND" = "help" ] || [ "$COMMAND" = "update" ] || [ "$COMMAND" = "version" ] ;}; then
+        help
+        exit 1
+    fi
+
+    "$COMMAND" "$@"
+elif [ $# -ge 2 ]; then
+    COMMAND="$1"
+    POD="$2"
+    shift 2
+    if ! { [ "$COMMAND" = "update" ] || [ "$COMMAND" = "enable" ] || [ "$COMMAND" = "disable" ] || [ "$COMMAND" = "start" ] || [ "$COMMAND" = "stop" ] || [ "$COMMAND" = "restart" ] || [ "$COMMAND" = "status" ]; }; then
+        help
+        exit 1
+    fi
+
+    if [ -d "$BASE_DIR/$POD" ]; then
+        if exist_command_in_pod "$1" "$2" > /dev/null 2>&1; then
+            "$(get_safe_function_name "$1" "$2")" "$@"
+        else
+            "$COMMAND" "$POD" "$@"
+        fi
+    else
+        echo "Pod not found: $POD"
+        exit 1
+    fi
+fi
+
+exit 0
+
+update:
+	git submodule update --remote --merge
+
+cloudflare-ddns:
+	git submodule add "git@github.com:rokoucha/cloudflare-ddns.git"
+	ln -sf ${ENV_DIR}/cloudflare-ddns.env ${BASE_DIR}/cloudflare-ddns/.env
+	mkdir -p ${HOME}/.config/systemd/user
+	ln -sf ${BASE_DIR}/cloudflare-ddns/systemd/*.timer ${HOME}/.config/systemd/user
+	ln -sf ${BASE_DIR}/cloudflare-ddns/systemd/podman/*.service ${HOME}/.config/systemd/user
+	systemctl --user daemon-reload
+	systemctl --user enable --now cloudflare-ddns-a@tomoko.timer
+	systemctl --user enable --now cloudflare-ddns-a@v4.tomoko.timer
+	systemctl --user enable --now cloudflare-ddns-aaaa@tomoko.timer
+	systemctl --user enable --now cloudflare-ddns-aaaa@v6.tomoko.timer
+
+certbot-cloudflare-systemd:
+	git submodule add git@github.com:rokoucha/certbot-cloudflare-systemd.git
+	ln -sf ${BASE_DIR}/certbot-cloudflare-systemd.env ${BASE_DIR}/certbot-cloudflare-systemd/.env
+	mkdir -p ${HOME}/.config/systemd/user
+	ln -sf ${BASE_DIR}/certbot-cloudflare-systemd/certbot-cloudflare@.* ${HOME}/.config/systemd/user
+	systemctl --user daemon-reload
+	systemctl --user enable --now certbot-cloudflare@ggrel.net.timer
+	systemctl --user enable --now certbot-cloudflare@heinrike.prinzessin.zu.sayn-wittgenste.in.timer
+	systemctl --user enable --now certbot-cloudflare@rokoucha.net.timer
+	systemctl --user enable --now certbot-cloudflare@sayn-wittgenste.in.timer
+
+splatnet2statink:
+	ln -sf ${BASE_DIR}/splatnet2statink.env ${BASE_DIR}/splatnet2statink/.env
+	mkdir -p ${HOME}/.config/systemd/user
+	ln -sf ${BASE_DIR}/splatnet2statink/splatnet2statink.* ${HOME}/.config/systemd/user
+	systemctl --user daemon-reload
+	systemctl --user enable --now splatnet2statink.timer
