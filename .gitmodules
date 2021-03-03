@@ -8,5 +8,5 @@
 	path = .env
 	url = git@github.com:rokoucha/tomoko-secrets.git
 [submodule "pleroma-rokoucha"]
-	path = pleroma-rokoucha
+	path = pleroma
 	url = git@github.com:rokoucha/pl.rokoucha.net.git
