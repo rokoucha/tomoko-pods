@@ -1,0 +1,29 @@
+[Unit]
+Description=The open-source platform for monitoring and observability.
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=60
+ExecStartPre=/bin/rm -f %t/container-grafana.pid %t/container-grafana.ctr-id
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile %t/container-grafana.ctr-id \
+    --conmon-pidfile %t/container-grafana.pid \
+    --env-file %h/pods/.env/grafana.env \
+    --name=grafana \
+    --replace \
+    --rm \
+    -p 53000:3000 \
+    -v grafana-data:/var/lib/grafana \
+    grafana/grafana:7.4.3
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-grafana.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-grafana.ctr-id
+PIDFile=%t/container-grafana.pid
+Type=simple
+WorkingDirectory=%h/pods/grafana
+
+[Install]
+WantedBy=multi-user.target default.target
