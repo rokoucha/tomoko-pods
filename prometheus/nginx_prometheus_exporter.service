@@ -1,0 +1,29 @@
+[Unit]
+Description=NGINX Prometheus Exporter for NGINX and NGINX Plus.
+Requires=prometheus.service
+Wants=network.target
+After=network-online.target prometheus.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=60
+ExecStartPre=/bin/rm -f %t/container-nginx_prometheus_exporter.pid %t/container-nginx_prometheus_exporter.ctr-id
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile %t/container-nginx_prometheus_exporter.ctr-id \
+    --conmon-pidfile %t/container-nginx_prometheus_exporter.pid \
+    --name=nginx_prometheus_exporter \
+    --replace \
+    --rm \
+    -p 9113:9113 \
+    nginx/nginx-prometheus-exporter:0.8.0 \
+    -nginx.scrape-uri http://nginx_stats.ggrel.net:50080/stub_status
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-nginx_prometheus_exporter.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-nginx_prometheus_exporter.ctr-id
+PIDFile=%t/container-nginx_prometheus_exporter.pid
+Type=simple
+WorkingDirectory=%h/pods/prometheus
+
+[Install]
+WantedBy=multi-user.target default.target

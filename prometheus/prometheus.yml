@@ -24,3 +24,8 @@ scrape_configs:
     static_configs:
     - targets:
       - 10.0.1.5:9100
+
+  - job_name: 'nginx'
+    static_configs:
+    - targets:
+      - 10.0.1.5:9113
