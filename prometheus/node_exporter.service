@@ -1,8 +1,7 @@
 [Unit]
 Description=Exporter for machine metrics.
-Requires=prometheus.service
 Wants=network.target
-After=network-online.target prometheus.service
+After=network-online.target
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n

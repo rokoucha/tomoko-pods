@@ -3,29 +3,103 @@ global:
   evaluation_interval: 30s
 
 scrape_configs:
-  - job_name: 'prometheus'
+  # self monitoring
+  - job_name: "prometheus"
     static_configs:
-    - targets:
-      - 10.0.1.5:9090
+      - targets:
+          - 10.0.1.5:9090
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "tomoko"
 
-  - job_name: 'pleroma'
+  # Pleroma/Rokoucha
+  - job_name: "pleroma"
     metrics_path: /api/pleroma/app_metrics
     scheme: https
     static_configs:
-    - targets: 
-      - pl-local.rokoucha.net:50443
+      - targets:
+          - pl-local.rokoucha.net:50443
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "tomoko"
 
-  - job_name: 'postgres'
+  # PostgreSQL
+  - job_name: "postgres"
     static_configs:
-    - targets: 
-      - 10.0.1.5:9187
+      - targets:
+          - 10.0.1.5:9187
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "tomoko"
 
-  - job_name: 'coreos'
+  # Nginx
+  - job_name: "nginx"
     static_configs:
-    - targets:
-      - 10.0.1.5:9100
+      - targets:
+          - 10.0.1.5:9113
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "tomoko"
 
-  - job_name: 'nginx'
+  # tomoko node_exporter
+  - job_name: "tomoko"
     static_configs:
-    - targets:
-      - 10.0.1.5:9113
+      - targets:
+          - 10.0.1.5:9100
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "tomoko"
+
+  # elma node_exporter
+  - job_name: "elma"
+    static_configs:
+      - targets:
+          - 10.0.1.7:9100
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "elma"
+
+  # shizuka node_exporter
+  - job_name: "shizuka"
+    static_configs:
+      - targets:
+          - 10.0.1.4:9100
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "shizuka"
+
+  # adolfine vmware_exporter
+  - job_name: "adolfine"
+    static_configs:
+      - targets:
+          - 10.0.1.5:9272
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "adolfine"
+
+  # minna windows_exporter
+  - job_name: "minna"
+    static_configs:
+      - targets:
+          - 10.0.1.11:9182
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "minna"

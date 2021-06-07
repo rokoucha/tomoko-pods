@@ -1,0 +1,28 @@
+[Unit]
+Description= VMWare vCenter Exporter for Prometheus
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=60
+ExecStartPre=/bin/rm -f %t/container-vmware_exporter.pid %t/container-vmware_exporter.ctr-id
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile %t/container-vmware_exporter.ctr-id \
+    --conmon-pidfile %t/container-vmware_exporter.pid \
+    --env-file %h/pods/.env/vmware_exporter.env \
+    --name=vmware_exporter \
+    --replace \
+    --rm \
+    -p 9272:9272 \
+    pryorda/vmware_exporter:v0.16.0
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-vmware_exporter.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-vmware_exporter.ctr-id
+PIDFile=%t/container-vmware_exporter.pid
+Type=simple
+WorkingDirectory=%h/pods/prometheus
+
+[Install]
+WantedBy=multi-user.target default.target

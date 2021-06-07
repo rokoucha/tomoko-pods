@@ -17,7 +17,9 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     -v %h/certificates:/certificates \
+    -v ./config/auth:/auth \
     -v ./config/conf.d:/etc/nginx/conf.d \
+    -v ./config/dhparam:/dhparam \
     -v ./config/nginx.conf:/etc/nginx/nginx.conf \
     -p 50080:50080 \
     -p 50443:50443 \
