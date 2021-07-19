@@ -18,7 +18,7 @@ ExecStart=/usr/bin/podman run \
     --rm \
     -p 25565:25565 \
     -v minecraft-data:/data \
-    itzg/minecraft-server:adopt11
+    docker.io/itzg/minecraft-server:java16
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-minecraft.ctr-id -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-minecraft.ctr-id
 PIDFile=%t/container-minecraft.pid
