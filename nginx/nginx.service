@@ -20,6 +20,7 @@ ExecStart=/usr/bin/podman run \
     -v ./config/auth:/auth \
     -v ./config/conf.d:/etc/nginx/conf.d \
     -v ./config/dhparam:/dhparam \
+    -v ./config/local.conf.d:/etc/nginx/local.conf.d \
     -v ./config/nginx.conf:/etc/nginx/nginx.conf \
     -p 50080:50080 \
     -p 50443:50443 \
