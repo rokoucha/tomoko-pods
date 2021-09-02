@@ -114,3 +114,15 @@ scrape_configs:
         regex: ".*"
         target_label: instance
         replacement: "haruka"
+
+  # haruka mirakurun-exporter
+  - job_name: "mirakurun"
+    scrape_interval: 60s
+    static_configs:
+      - targets:
+          - 10.0.1.9:9684
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "mirakurun"
