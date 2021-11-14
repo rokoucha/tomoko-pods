@@ -18,8 +18,9 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     -p 9100:9100 \
-    -v "/:/host:ro,rslave" \
-    prom/node-exporter:v1.1.1 \
+    -v /:/host:ro,rslave \
+    -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
+    docker.io/prom/node-exporter:v1.2.2 \
     --collector.processes \
     --collector.systemd \
     --path.rootfs=/host
