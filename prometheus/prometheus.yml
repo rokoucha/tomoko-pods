@@ -126,3 +126,15 @@ scrape_configs:
         regex: ".*"
         target_label: instance
         replacement: "mirakurun"
+
+  # haruka intel-prometheus
+  - job_name: "intel-igpu"
+    scrape_interval: 60s
+    static_configs:
+      - targets:
+          - 10.0.1.9:8080
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "intel-igpu"
