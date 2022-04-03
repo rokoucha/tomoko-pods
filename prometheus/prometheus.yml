@@ -60,22 +60,11 @@ scrape_configs:
         target_label: instance
         replacement: "tomoko"
 
-  # elma node_exporter
-  - job_name: "elma"
-    static_configs:
-      - targets:
-          - 10.0.1.7:9100
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: ".*"
-        target_label: instance
-        replacement: "elma"
-
   # shizuka node_exporter
   - job_name: "shizuka"
     static_configs:
       - targets:
-          - 10.0.1.4:9100
+          - 172.16.2.12:9100
     relabel_configs:
       - source_labels: [__address__]
         regex: ".*"
@@ -93,22 +82,11 @@ scrape_configs:
         target_label: instance
         replacement: "adolfine"
 
-  # minna windows_exporter
-  - job_name: "minna"
-    static_configs:
-      - targets:
-          - 10.0.1.10:9182
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: ".*"
-        target_label: instance
-        replacement: "minna"
-
   # haruka node_exporter
   - job_name: "haruka"
     static_configs:
       - targets:
-          - 10.0.1.9:9100
+          - 172.16.2.21:9100
     relabel_configs:
       - source_labels: [__address__]
         regex: ".*"
@@ -120,7 +98,7 @@ scrape_configs:
     scrape_interval: 60s
     static_configs:
       - targets:
-          - 10.0.1.9:9684
+          - 172.16.2.21:9684
     relabel_configs:
       - source_labels: [__address__]
         regex: ".*"
@@ -132,9 +110,41 @@ scrape_configs:
     scrape_interval: 60s
     static_configs:
       - targets:
-          - 10.0.1.9:8080
+          - 172.16.2.21:8080
     relabel_configs:
       - source_labels: [__address__]
         regex: ".*"
         target_label: instance
         replacement: "intel-igpu"
+
+  # IX2207 snmp_expoter if_mib
+  - job_name: "ix2207-if_mib"
+    static_configs:
+      - targets:
+          - 172.16.2.1
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.11:9116
+
+  # IX2207 snmp_expoter nec_ix
+  - job_name: "ix2207-nec_ix"
+    static_configs:
+      - targets:
+          - 172.16.2.1
+    metrics_path: /snmp
+    params:
+      module: [nec_ix]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.11:9116
