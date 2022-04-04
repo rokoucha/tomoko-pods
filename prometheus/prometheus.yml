@@ -148,3 +148,15 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 172.16.2.11:9116
+
+  # tomoko apcupsd_exporter
+  - job_name: "apcupsd"
+    scrape_interval: 60s
+    static_configs:
+      - targets:
+          - 172.16.2.11:59162
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "apcupsd"
