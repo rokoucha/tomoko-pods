@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ssh \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -i /etc/apcupsd/apcupsd_rsa.key \
+    apcupsd@adolfine.dns.ggrel.net \
+    /bin/halt

@@ -25,9 +25,10 @@ ExecStart=/usr/bin/podman run \
     --rm \
     --sdnotify=conmon \
     --tty \
+    --volume %h/pods/.env/apcupsd_rsa.key:/etc/apcupsd/apcupsd_rsa.key:ro \
     --volume %h/pods/apcupsd/apcupsd.conf:/etc/apcupsd/apcupsd.conf:ro \
-    --volume %h/pods/apcupsd/temp:/tmp/apcupsd-docker \
-    docker.io/gersilex/apcupsd:v1
+    --volume %h/pods/apcupsd/doshutdown:/etc/apcupsd/doshutdown:ro \
+    apcupsd
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
 Type=notify
