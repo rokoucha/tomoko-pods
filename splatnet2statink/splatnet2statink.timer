@@ -1,9 +1,0 @@
-[Unit]
-Description=Takes battle data from the SplatNet 2 app and uploads it to stat.ink. 
-
-[Timer]
-OnBootSec=1m
-OnUnitActiveSec=6h
-
-[Install]
-WantedBy=timers.target
