@@ -21,8 +21,7 @@ ExecStart=/usr/bin/podman run \
     -p 9987:9987/udp \
     -p 10011:10011 \
     -p 30033:30033 \
-    ghcr.io/truecharts/teamspeak:v3.13.6
-    #docker.io/library/teamspeak:3.13
+    docker.io/library/teamspeak:3.13.7
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-teamspeak.ctr-id -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-teamspeak.ctr-id
 PIDFile=%t/container-teamspeak.pid

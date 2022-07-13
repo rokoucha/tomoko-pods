@@ -18,7 +18,7 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     -p 9187:9187 \
-    prometheuscommunity/postgres-exporter:v0.9.0
+    docker.io/prometheuscommunity/postgres-exporter:v0.10.1
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-postgres_exporter.ctr-id -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-postgres_exporter.ctr-id
 PIDFile=%t/container-postgres_exporter.pid
