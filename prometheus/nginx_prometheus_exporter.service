@@ -18,7 +18,7 @@ ExecStart=/usr/bin/podman run \
     --rm \
     -p 9113:9113 \
     docker.io/nginx/nginx-prometheus-exporter:0.10.0 \
-    -nginx.scrape-uri http://nginx_stats.ggrel.net:50080/stub_status
+    -nginx.scrape-uri http://nginx_stats.ggrel.net:80/stub_status
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-nginx_prometheus_exporter.ctr-id -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-nginx_prometheus_exporter.ctr-id
 PIDFile=%t/container-nginx_prometheus_exporter.pid

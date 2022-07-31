@@ -20,7 +20,7 @@ scrape_configs:
     scheme: https
     static_configs:
       - targets:
-          - pl-local.rokoucha.net:50443
+          - pl.rokoucha.net:443
     relabel_configs:
       - source_labels: [__address__]
         regex: ".*"
