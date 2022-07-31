@@ -14,7 +14,7 @@ ExecStart=/usr/bin/podman run \
     --cgroups=no-conmon \
     --cidfile=%t/%n.ctr-id \
     --detach \
-    --env-file %h/pods/postgres/.env \
+    --env-file %h/pods/.env/postgres.env \
     --name postgres \
     --publish 5432:5432 \
     --replace \
