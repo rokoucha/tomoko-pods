@@ -1,28 +1,30 @@
 [Unit]
 Description= VMWare vCenter Exporter for Prometheus
-Wants=network.target
+Documentation=man:podman-generate-systemd(1)
+Wants=network-online.target
 After=network-online.target
+RequiresMountsFor=%t/containers
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
-TimeoutStopSec=60
-ExecStartPre=/bin/rm -f %t/container-vmware_exporter.pid %t/container-vmware_exporter.ctr-id
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/%n.ctr-id
 ExecStart=/usr/bin/podman run \
     --cgroups=no-conmon \
-    --cidfile %t/container-vmware_exporter.ctr-id \
-    --conmon-pidfile %t/container-vmware_exporter.pid \
+    --cidfile=%t/%n.ctr-id \
+    --detach \
     --env-file %h/pods/.env/vmware_exporter.env \
-    --name=vmware_exporter \
+    --name vmware_exporter \
+    --publish 9272:9272 \
     --replace \
     --rm \
-    -p 9272:9272 \
-    pryorda/vmware_exporter:v0.16.0
-ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-vmware_exporter.ctr-id -t 10
-ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-vmware_exporter.ctr-id
-PIDFile=%t/container-vmware_exporter.pid
-Type=simple
-WorkingDirectory=%h/pods/prometheus
+    --sdnotify=conmon \
+    docker.io/pryorda/vmware_exporter:v0.18.4
+ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
 
 [Install]
-WantedBy=multi-user.target default.target
+WantedBy=default.target

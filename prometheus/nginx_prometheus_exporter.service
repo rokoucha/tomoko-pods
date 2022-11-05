@@ -1,29 +1,31 @@
 [Unit]
 Description=NGINX Prometheus Exporter for NGINX and NGINX Plus.
 Requires=nginx.service
-Wants=network.target
+Documentation=man:podman-generate-systemd(1)
+Wants=network-online.target
 After=network-online.target nginx.service
+RequiresMountsFor=%t/containers
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
-TimeoutStopSec=60
-ExecStartPre=/bin/rm -f %t/container-nginx_prometheus_exporter.pid %t/container-nginx_prometheus_exporter.ctr-id
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/%n.ctr-id
 ExecStart=/usr/bin/podman run \
     --cgroups=no-conmon \
-    --cidfile %t/container-nginx_prometheus_exporter.ctr-id \
-    --conmon-pidfile %t/container-nginx_prometheus_exporter.pid \
-    --name=nginx_prometheus_exporter \
+    --cidfile=%t/%n.ctr-id \
+    --detach \
+    --name nginx_prometheus_exporter \
+    --publish 9113:9113 \
     --replace \
     --rm \
-    -p 9113:9113 \
-    docker.io/nginx/nginx-prometheus-exporter:0.10.0 \
+    --sdnotify=conmon \
+    docker.io/nginx/nginx-prometheus-exporter:0.11 \
     -nginx.scrape-uri http://nginx_stats.ggrel.net:80/stub_status
-ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-nginx_prometheus_exporter.ctr-id -t 10
-ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-nginx_prometheus_exporter.ctr-id
-PIDFile=%t/container-nginx_prometheus_exporter.pid
-Type=simple
-WorkingDirectory=%h/pods/prometheus
+ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
 
 [Install]
-WantedBy=multi-user.target default.target
+WantedBy=default.target

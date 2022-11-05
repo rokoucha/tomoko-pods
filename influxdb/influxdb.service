@@ -24,7 +24,7 @@ ExecStart=/usr/bin/podman run \
     --rm \
     --sdnotify=conmon \
     --volume influxdb-data:/var/lib/influxdb2 \
-    docker.io/library/influxdb:2.2-alpine
+    docker.io/library/influxdb:2.5-alpine
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
 Type=notify

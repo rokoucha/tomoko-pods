@@ -160,3 +160,14 @@ scrape_configs:
         regex: ".*"
         target_label: instance
         replacement: "apcupsd"
+
+  # mamoru node_exporter
+  - job_name: "mamoru"
+    static_configs:
+      - targets:
+          - 172.16.2.13:9100
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "mamoru"

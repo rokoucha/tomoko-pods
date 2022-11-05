@@ -1,29 +1,31 @@
 [Unit]
 Description=Miniflux is a minimalist and opinionated feed reader.
+Documentation=man:podman-generate-systemd(1)
 Requires=postgres.service
-Wants=network.target
+Wants=network-online.target
 After=network-online.target postgres.service
+RequiresMountsFor=%t/containers
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
-TimeoutStopSec=60
-ExecStartPre=/bin/rm -f %t/container-miniflux.pid %t/container-miniflux.ctr-id
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/%n.ctr-id
 ExecStart=/usr/bin/podman run \
     --cgroups=no-conmon \
-    --cidfile %t/container-miniflux.ctr-id \
-    --conmon-pidfile %t/container-miniflux.pid \
-    --env-file .env \
+    --cidfile=%t/%n.ctr-id \
+    --detach \
+    --env-file %h/pods/.env/miniflux.env \
     --name=miniflux \
+    --publish 58080:8080 \
     --replace \
     --rm \
-    -p 58080:8080 \
-    docker.io/miniflux/miniflux:2.0.34
-ExecStop=/usr/bin/podman stop --ignore --cidfile %t/container-miniflux.ctr-id -t 10
-ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/container-miniflux.ctr-id
-PIDFile=%t/container-miniflux.pid
-Type=simple
-WorkingDirectory=%h/pods/miniflux
+    --sdnotify=conmon \
+    docker.io/miniflux/miniflux:2.0.39-distroless
+ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
 
 [Install]
-WantedBy=multi-user.target default.target
+WantedBy=default.target
