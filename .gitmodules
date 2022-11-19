@@ -1,9 +1,6 @@
 [submodule "certbot-cloudflare-systemd"]
 	path = certbot-cloudflare-systemd
 	url = git@github.com:rokoucha/certbot-cloudflare-systemd.git
-[submodule "cloudflare-ddns"]
-	path = cloudflare-ddns
-	url = git@github.com:rokoucha/cloudflare-ddns.git
 [submodule ".env"]
 	path = .env
 	url = git@github.com:rokoucha/tomoko-secrets.git
