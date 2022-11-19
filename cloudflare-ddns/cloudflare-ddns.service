@@ -22,7 +22,7 @@ ExecStart=/usr/bin/podman run \
     --sdnotify=conmon \
     ghcr.io/rokoucha/cloudflare-ddns:latest \
     --external \
-    --hostname=tomoko \
+    --hostname=%H \
     --subdomain=dns \
     ggrel.net
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
