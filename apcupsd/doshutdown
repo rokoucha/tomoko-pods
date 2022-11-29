@@ -3,6 +3,6 @@
 ssh \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
-    -i /etc/apcupsd/apcupsd_rsa.key \
+    -i /etc/apcupsd/apcupsd_ed25519 \
     apcupsd@adolfine.dns.ggrel.net \
     /bin/halt
