@@ -15,7 +15,7 @@ ExecStart=/usr/bin/podman run \
     --cgroups=no-conmon \
     --cidfile=%t/%n.ctr-id \
     --detach \
-    --env-file %h/pods/.env/postgres_exporter.env \
+    --env DATA_SOURCE_NAME=postgres://postgres_exporter:postgres_exporter@172.16.2.11/miniflux?sslmode=disable \
     --name postgres_exporter \
     --publish 9187:9187 \
     --replace \
