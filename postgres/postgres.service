@@ -20,9 +20,8 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     --sdnotify=conmon \
-    --shm-size 1G \
     --volume postgres-data:/var/lib/postgresql/data \
-    docker.io/library/postgres:13.7
+    docker.io/library/postgres:15.1
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
 Type=notify
