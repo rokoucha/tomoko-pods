@@ -171,3 +171,83 @@ scrape_configs:
         regex: ".*"
         target_label: instance
         replacement: "vesna"
+
+  # vesna blackbox_exporter bbix
+  - job_name: "bbix-v4"
+    scrape_interval: 1m
+    metrics_path: /bbix/probe
+    params:
+      module: [ping_v4]
+    static_configs:
+      - targets:
+          - 172.16.10.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.13:9115
+
+  # vesna blackbox_exporter vectant
+  - job_name: "vectant-v4"
+    scrape_interval: 1m
+    metrics_path: /vectant/probe
+    params:
+      module: [ping_v4]
+    static_configs:
+      - targets:
+          - 172.16.11.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.13:9115
+
+  # vesna blackbox_exporter mobile
+  - job_name: "mobile-v4"
+    scrape_interval: 1m
+    metrics_path: /mobile/probe
+    params:
+      module: [ping_v4]
+    static_configs:
+      - targets:
+          - 172.16.12.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.13:9115
+
+  # vesna blackbox_exporter itscom
+  - job_name: "itscom-v4"
+    scrape_interval: 1m
+    metrics_path: /itscom/probe
+    params:
+      module: [ping_v4]
+    static_configs:
+      - targets:
+          - 172.16.13.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.13:9115
