@@ -1,0 +1,35 @@
+[Unit]
+Description=Podman container-switchbot-meter-exporter.service
+Documentation=man:podman-generate-systemd(1)
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile=%t/%n.ctr-id \
+    --detach \
+    --env-file %h/pods/.env/switchbot-meter-exporter.env \
+    --name switchbot-meter-exporter \
+    --publish 8888:8888 \
+    --replace \
+    --rm \
+    --sdnotify=conmon \
+    ghcr.io/rokoucha/switchbot-meter-exporter:latest \
+    --port 8888
+ExecStop=/usr/bin/podman stop \
+    --ignore -t 10 \
+    --cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm \
+    --cidfile=%t/%n.ctr-id \
+    --ignore -t 10 \
+    -f
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target
