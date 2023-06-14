@@ -20,7 +20,7 @@ ExecStart=/usr/bin/podman run \
     --rm \
     --sdnotify=conmon \
     --volume %h/pods/prometheus/snmp.yml:/snmp.yml:ro \
-    docker.io/prom/snmp-exporter:v0.20.0 \
+    docker.io/prom/snmp-exporter:v0.21.0 \
     --config.file='/snmp.yml'
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id

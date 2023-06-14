@@ -21,7 +21,7 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     --sdnotify=conmon \
-    docker.io/prometheuscommunity/postgres-exporter:v0.11.1
+    docker.io/prometheuscommunity/postgres-exporter:v0.12.1
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
 Type=notify
