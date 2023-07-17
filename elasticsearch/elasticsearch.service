@@ -1,0 +1,48 @@
+# elasticsearch.service
+
+[Unit]
+Description=Podman elasticsearch.service
+Documentation=man:podman-generate-systemd(1)
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile=%t/%n.ctr-id \
+    --detach \
+    --env bootstrap.memory_lock=false \
+    --env cluster.name=es \
+    --env discovery.type=single-node \
+    --env ES_JAVA_OPTS="-Xms128m -Xmx128m -Des.enforce.bootstrap.checks=true" \
+    --env node.store.allow_mmap=true \
+    --env thread_pool.write.queue_size=1000 \
+    --env xpack.graph.enabled=false \
+    --env xpack.license.self_generated.type=basic \
+    --env xpack.ml.enabled=false \
+    --env xpack.security.enabled=false \
+    --env xpack.watcher.enabled=false \
+    --env-file %h/pods/.env/elasticsearch.env \
+    --name elasticsearch \
+    --publish 9200:9200 \
+    --replace \
+    --rm \
+    --sdnotify=conmon \
+    --volume elasticsearch-data:/usr/share/elasticsearch/data \
+    docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+ExecStop=/usr/bin/podman stop \
+    --ignore -t 10 \
+    --cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm \
+    -f \
+    --ignore -t 10 \
+    --cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target

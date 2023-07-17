@@ -1,0 +1,39 @@
+# mastodon-streaming.service
+
+[Unit]
+Description=Podman mastodon-streaming.service
+Documentation=man:podman-generate-systemd(1)
+Requires=redis.service postgres.service
+Wants=network-online.target
+After=network-online.target redis.service postgres.service
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/bin/podman run \
+    --add-host pl.rokoucha.net:172.16.2.11 \
+    --cgroups=no-conmon \
+    --cidfile=%t/%n.ctr-id \
+    --detach \
+    --env-file %h/pods/.env/mastodon.env \
+    --name mastodon-streaming \
+    --publish 51040:4000 \
+    --replace \
+    --rm \
+    --sdnotify=conmon \
+    ghcr.io/mastodon/mastodon:v4.1.4 \
+    node ./streaming
+ExecStop=/usr/bin/podman stop \
+    --ignore -t 10 \
+    --cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm \
+    -f \
+    --ignore -t 10 \
+    --cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target
