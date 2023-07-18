@@ -1,0 +1,39 @@
+# statsd_exporter.service
+
+[Unit]
+Description=Podman statsd_exporter.service
+Documentation=man:podman-generate-systemd(1)
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/bin/podman run \
+	--cgroups=no-conmon \
+	--cidfile=%t/%n.ctr-id \
+	--detach \
+	--name statsd_exporter \
+	--publish 9102:9102 \
+	--publish 9125:9125 \
+	--publish 9125:9125/udp \
+	--replace \
+	--rm \
+	--sdnotify=conmon \
+	--volume %h/pods/prometheus/statsd-mapping.yaml:/statsd-mapping.yaml \
+	docker.io/prom/statsd-exporter:v0.24.0 \
+	--statsd.mapping-config=/statsd-mapping.yaml
+ExecStop=/usr/bin/podman stop \
+	--ignore -t 10 \
+	--cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm \
+	-f \
+	--ignore -t 10 \
+	--cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target

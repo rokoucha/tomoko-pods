@@ -21,7 +21,7 @@ ExecStart=/usr/bin/podman run \
     --sdnotify=conmon \
     --volume %h/pods/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
     --volume prometheus-data:/prometheus \
-    docker.io/prom/prometheus:v2.44.0 \
+    docker.io/prom/prometheus:v2.45.0 \
     --config.file=/etc/prometheus/prometheus.yml \
     --storage.tsdb.retention.time 30d
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
