@@ -1,0 +1,36 @@
+# elasticsearch-exporter.service
+
+[Unit]
+Description=Podman elasticsearch-exporter.service
+Documentation=man:podman-generate-systemd(1)
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/bin/podman run \
+	--cgroups=no-conmon \
+	--cidfile=%t/%n.ctr-id \
+	--detach \
+	--name elasticsearch-exporter \
+	--publish 9114:9114 \
+	--replace \
+	--rm \
+	--sdnotify=conmon \
+	quay.io/prometheuscommunity/elasticsearch-exporter:v1.6.0 \
+	--es.uri=http://host.containers.internal:9200
+ExecStop=/usr/bin/podman stop \
+	--ignore -t 10 \
+	--cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm \
+	-f \
+	--ignore -t 10 \
+	--cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target

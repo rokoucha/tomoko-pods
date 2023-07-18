@@ -274,3 +274,10 @@ scrape_configs:
     static_configs:
       - targets:
           - host.containers.internal:9102
+
+  # tomoko elasticsearch_expoter
+  - job_name: elasticsearch
+    scrape_interval: 1m
+    static_configs:
+      - targets:
+          - host.containers.internal:9114
