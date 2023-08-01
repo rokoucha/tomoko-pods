@@ -25,7 +25,7 @@ ExecStart=/usr/bin/podman run \
     --name apcupsd_exporter \
     --publish 59162:59162 \
     docker.io/sfudeus/apcupsd_exporter:master_1.17.3 \
-    -apcupsd.addr 172.16.2.11:53551 \
+    -apcupsd.addr host.containers.internal:53551 \
     -telemetry.addr 0.0.0.0:59162
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
