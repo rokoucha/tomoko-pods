@@ -13,7 +13,6 @@ Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
 TimeoutStopSec=70
 ExecStart=/usr/bin/podman run \
-    --add-host pl.rokoucha.net:172.16.2.11 \
     --cgroups=no-conmon \
     --cidfile=%t/%n.ctr-id \
     --detach \
@@ -24,7 +23,7 @@ ExecStart=/usr/bin/podman run \
     --rm \
     --sdnotify=conmon \
     --volume mastodon-data:/mastodon/public/system \
-    ghcr.io/mastodon/mastodon:v4.1.4 \
+    ghcr.io/mastodon/mastodon:v4.1.6 \
     bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"
 ExecStop=/usr/bin/podman stop \
     --ignore -t 10 \

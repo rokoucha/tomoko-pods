@@ -13,7 +13,6 @@ Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
 TimeoutStopSec=70
 ExecStart=/usr/bin/podman run \
-    --add-host pl.rokoucha.net:172.16.2.11 \
     --cgroups=no-conmon \
     --cidfile=%t/%n.ctr-id \
     --detach \
@@ -23,7 +22,7 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     --sdnotify=conmon \
-    ghcr.io/mastodon/mastodon:v4.1.4 \
+    ghcr.io/mastodon/mastodon:v4.1.6 \
     node ./streaming
 ExecStop=/usr/bin/podman stop \
     --ignore -t 10 \
