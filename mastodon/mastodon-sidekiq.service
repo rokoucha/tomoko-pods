@@ -22,7 +22,7 @@ ExecStart=/usr/bin/podman run \
     --rm \
     --sdnotify=conmon \
     --volume mastodon-data:/mastodon/public/system \
-    ghcr.io/mastodon/mastodon:v4.1.9 \
+    ghcr.io/mastodon/mastodon:v4.2.0 \
     bundle exec sidekiq
 ExecStop=/usr/bin/podman stop \
     --ignore -t 10 \
