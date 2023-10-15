@@ -172,10 +172,10 @@ scrape_configs:
         target_label: instance
         replacement: "vesna"
 
-  # vesna blackbox_exporter bbix
-  - job_name: "bbix-v4"
+  # vesna blackbox_exporter bbix-4over6
+  - job_name: "bbix-4over6-v4"
     scrape_interval: 1m
-    metrics_path: /bbix/probe
+    metrics_path: /bbix-4over6/probe
     params:
       module: [ping_v4]
     static_configs:
@@ -192,10 +192,10 @@ scrape_configs:
       - target_label: __address__
         replacement: 172.16.2.13:9115
 
-  # vesna blackbox_exporter vectant
-  - job_name: "vectant-v4"
+  # vesna blackbox_exporter bbix-pppoe
+  - job_name: "bbix-pppoe-v4"
     scrape_interval: 1m
-    metrics_path: /vectant/probe
+    metrics_path: /bbix-pppoe/probe
     params:
       module: [ping_v4]
     static_configs:
