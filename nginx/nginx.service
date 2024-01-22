@@ -30,8 +30,7 @@ ExecStart=/usr/bin/podman run \
     --volume %h/pods/nginx/config/conf.d:/etc/nginx/conf.d \
     --volume %h/pods/nginx/config/dhparam:/dhparam \
     --volume %h/pods/nginx/config/nginx.conf:/etc/nginx/nginx.conf \
-    --volume %h/pods/nginx/config/openssl.cnf:/etc/ssl1.1/openssl.cnf \
-    docker.io/library/nginx:1.25
+    docker.io/library/nginx:1.25.3
 ExecReload=/usr/bin/podman exec nginx nginx -s reload
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
