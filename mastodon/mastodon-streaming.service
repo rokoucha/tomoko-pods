@@ -22,7 +22,7 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     --sdnotify=conmon \
-    ghcr.io/mastodon/mastodon:v4.2.3 \
+    ghcr.io/mastodon/mastodon:v4.2.4 \
     node ./streaming
 ExecStop=/usr/bin/podman stop \
     --ignore -t 10 \
