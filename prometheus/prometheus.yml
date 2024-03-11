@@ -161,97 +161,6 @@ scrape_configs:
         target_label: instance
         replacement: "apcupsd"
 
-  # vesna node_exporter
-  - job_name: "vesna"
-    static_configs:
-      - targets:
-          - 172.16.2.13:9100
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: ".*"
-        target_label: instance
-        replacement: "vesna"
-
-  # vesna blackbox_exporter bbix-4over6
-  - job_name: "bbix-4over6-v4"
-    scrape_interval: 1m
-    metrics_path: /bbix-4over6/probe
-    params:
-      module: [ping_v4]
-    static_configs:
-      - targets:
-          - 172.16.10.1
-          - 1.1.1.1
-          - 8.8.8.8
-          - ping-e.sinet.ad.jp
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 172.16.2.13:9115
-
-  # vesna blackbox_exporter bbix-pppoe
-  - job_name: "bbix-pppoe-v4"
-    scrape_interval: 1m
-    metrics_path: /bbix-pppoe/probe
-    params:
-      module: [ping_v4]
-    static_configs:
-      - targets:
-          - 172.16.11.1
-          - 1.1.1.1
-          - 8.8.8.8
-          - ping-e.sinet.ad.jp
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 172.16.2.13:9115
-
-  # vesna blackbox_exporter mobile
-  - job_name: "mobile-v4"
-    scrape_interval: 1m
-    metrics_path: /mobile/probe
-    params:
-      module: [ping_v4]
-    static_configs:
-      - targets:
-          - 172.16.12.1
-          - 1.1.1.1
-          - 8.8.8.8
-          - ping-e.sinet.ad.jp
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 172.16.2.13:9115
-
-  # vesna blackbox_exporter itscom
-  - job_name: "itscom-v4"
-    scrape_interval: 1m
-    metrics_path: /itscom/probe
-    params:
-      module: [ping_v4]
-    static_configs:
-      - targets:
-          - 172.16.13.1
-          - 1.1.1.1
-          - 8.8.8.8
-          - ping-e.sinet.ad.jp
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 172.16.2.13:9115
-
   # tomoko switchbot-meter-expoter
   - job_name: "switchbot-meter"
     scrape_interval: 1m
@@ -283,12 +192,99 @@ scrape_configs:
           - host.containers.internal:9114
 
   # elma node_exporter
-  - job_name: "elma"
+  - job_name: elma
     static_configs:
       - targets:
           - 172.16.2.14:9100
     relabel_configs:
-      - source_labels: [__address__]
-        regex: ".*"
-        target_label: instance
+      - target_label: instance
         replacement: "elma"
+
+  # elma blackbox_exporter
+  - job_name: "blackbox_exporter"
+    scrape_interval: 1m
+    static_configs:
+      - targets: [172.16.2.14:9115]
+    relabel_configs:
+      - target_label: instance
+        replacement: "elma"
+
+  # elma blackbox_exporter bbix-4over6-v4
+  - job_name: "bbix-4over6-v4"
+    scrape_interval: 1m
+    metrics_path: /probe
+    params:
+      module: [ping_bbix-4over6-v4]
+    static_configs:
+      - targets:
+          - 172.16.10.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.14:9115
+
+  # elma blackbox_exporter bbix-pppoe-v4
+  - job_name: "bbix-pppoe-v4"
+    scrape_interval: 1m
+    metrics_path: /probe
+    params:
+      module: [ping_bbix-pppoe-v4]
+    static_configs:
+      - targets:
+          - 172.16.11.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.14:9115
+
+  # elma blackbox_exporter mobile-v4
+  - job_name: "mobile-v4"
+    scrape_interval: 1m
+    metrics_path: /probe
+    params:
+      module: [ping_mobile-v4]
+    static_configs:
+      - targets:
+          - 172.16.12.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.14:9115
+
+  # vesna blackbox_exporter itscom-v4
+  - job_name: "itscom-v4"
+    scrape_interval: 1m
+    metrics_path: /probe
+    params:
+      module: [ping_itscom-v4]
+    static_configs:
+      - targets:
+          - 172.16.13.1
+          - 1.1.1.1
+          - 8.8.8.8
+          - ping-e.sinet.ad.jp
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.16.2.14:9115
