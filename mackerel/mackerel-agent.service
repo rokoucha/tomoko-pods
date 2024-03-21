@@ -29,7 +29,7 @@ ExecStart=/usr/bin/podman run \
     --rm \
     --sdnotify=conmon \
     --volume mackerel-agent:/var/lib/mackerel-agent/ \
-    docker.io/mackerel/mackerel-agent:0.77.0
+    docker.io/mackerel/mackerel-agent:0.80.0
 ExecStop=/usr/bin/podman stop \
     --ignore -t 10 \
     --cidfile=%t/%n.ctr-id
