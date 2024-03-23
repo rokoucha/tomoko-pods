@@ -28,6 +28,9 @@ ExecStart=/usr/bin/podman run \
     --replace \
     --rm \
     --sdnotify=conmon \
+    --volume /:/rootfs:ro \
+    --volume /dev/disk:/dev/disk:ro \
+    --volume /sys:/sys:ro \
     --volume mackerel-agent:/var/lib/mackerel-agent/ \
     docker.io/mackerel/mackerel-agent:0.80.0
 ExecStop=/usr/bin/podman stop \
