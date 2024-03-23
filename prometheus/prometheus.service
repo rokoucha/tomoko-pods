@@ -21,9 +21,10 @@ ExecStart=/usr/bin/podman run \
     --sdnotify=conmon \
     --volume %h/pods/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
     --volume prometheus-data:/prometheus \
-    quay.io/prometheus/prometheus:v2.50.1 \
+    quay.io/prometheus/prometheus:v2.51.0 \
     --config.file=/etc/prometheus/prometheus.yml \
-    --storage.tsdb.retention.time 30d
+    --storage.tsdb.retention.time 30d \
+    --web.enable-remote-write-receiver
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
 Type=notify
