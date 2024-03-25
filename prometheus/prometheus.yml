@@ -291,3 +291,9 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 172.16.2.14:9115
+
+  # tomoko cadvisor
+  - job_name: cadvisor
+    static_configs:
+      - targets:
+          - host.containers.internal:48080
