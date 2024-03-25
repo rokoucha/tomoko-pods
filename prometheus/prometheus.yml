@@ -297,3 +297,9 @@ scrape_configs:
     static_configs:
       - targets:
           - host.containers.internal:48080
+
+  # MariaDB
+  - job_name: mariadb
+    static_configs:
+      - targets:
+          - host.containers.internal:9104

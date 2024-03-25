@@ -1,0 +1,36 @@
+[Unit]
+Description=Exporter for MySQL server metrics
+Documentation=man:podman-generate-systemd(1)
+Requires=mariadb.service
+Wants=network-online.target
+After=network-online.target mariadb.service
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/bin/podman run \
+    --cgroups=no-conmon \
+    --cidfile=%t/%n.ctr-id \
+    --detach \
+    --name mysqld-exporter \
+    --publish 9104:9104 \
+    --replace \
+    --rm \
+    --sdnotify=conmon \
+    quay.io/prometheus/mysqld-exporter:v0.15.1 \
+    --mysqld.address=host.containers.internal:3306 \
+    --mysqld.username=exporter:exporter
+ExecStop=/usr/bin/podman stop \
+    --ignore -t 10 \
+    --cidfile=%t/%n.ctr-id
+ExecStopPost=/usr/bin/podman rm \
+    -f \
+    --ignore -t 10 \
+    --cidfile=%t/%n.ctr-id
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=default.target
