@@ -285,8 +285,14 @@ scrape_configs:
       - targets:
           - host.containers.internal:48080
 
-  # MariaDB
+  # tomoko mariadb-exporter
   - job_name: mariadb
     static_configs:
       - targets:
           - host.containers.internal:9104
+
+  # tomoko podman-exporter
+  - job_name: podman
+    static_configs:
+      - targets:
+          - host.containers.internal:9882
