@@ -23,7 +23,7 @@ ExecStart=/usr/bin/podman run \
     --sdnotify=conmon \
     --volume /:/host:ro,rslave \
     --volume /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
-    docker.io/prom/node-exporter:v1.6.0 \
+    docker.io/prom/node-exporter:v1.7.0 \
     --collector.processes \
     --collector.systemd \
     --path.rootfs=/host
