@@ -2,6 +2,9 @@ global:
   scrape_interval: 15s
   evaluation_interval: 30s
 
+remote_write:
+  - url: http://host.containers.internal:19291
+
 scrape_configs:
   # self monitoring
   - job_name: "prometheus"
