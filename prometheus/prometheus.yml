@@ -6,8 +6,8 @@ remote_write:
   - url: http://host.containers.internal:19291
 
 scrape_configs:
-  # self monitoring
-  - job_name: "prometheus"
+  # tomoko prometheus
+  - job_name: prometheus
     static_configs:
       - targets:
           - host.containers.internal:9090
@@ -17,20 +17,7 @@ scrape_configs:
         target_label: instance
         replacement: "tomoko"
 
-  # Pleroma/Rokoucha
-  - job_name: "pleroma"
-    metrics_path: /api/pleroma/app_metrics
-    scheme: https
-    static_configs:
-      - targets:
-          - pl.rokoucha.net:443
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: ".*"
-        target_label: instance
-        replacement: "tomoko"
-
-  # PostgreSQL
+  # tomoko postgresql-exporter
   - job_name: "postgres"
     static_configs:
       - targets:
@@ -41,7 +28,7 @@ scrape_configs:
         target_label: instance
         replacement: "tomoko"
 
-  # Nginx
+  # tomoko nginx-prometheus-exporter
   - job_name: "nginx"
     static_configs:
       - targets:
